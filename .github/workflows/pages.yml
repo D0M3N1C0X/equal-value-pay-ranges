@@ -1,0 +1,57 @@
+# Publishes the report, the pay range finder and the Excel model to GitHub Pages.
+# site/ already holds the range finder (ads.html); the report and the workbook join it.
+name: site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - reports/**
+      - deliverables/**
+      - site/**
+      - .github/workflows/pages.yml
+      - site-assets/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble the site
+        run: |
+          cp reports/index.html site/index.html
+          cp -r reports/figures site/figures
+          cp deliverables/equal_value_pay_ranges.xlsx site/
+
+      - name: Add the link preview
+        run: |
+          cp site-assets/og.png site/og.png
+          python3 - <<'PY'
+          from pathlib import Path
+          page = Path("site/index.html")
+          html = page.read_text(encoding="utf-8")
+          assert html.count("<head>") == 1, "expected one <head> tag"
+          meta = Path("site-assets/og-meta.html").read_text(encoding="utf-8")
+          page.write_text(html.replace("<head>", "<head>\n" + meta, 1), encoding="utf-8")
+          PY
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
