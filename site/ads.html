@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pay Range Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --paper:#fbfcfd; --surface:#ffffff; --ink:#131a24; --ink-soft:#39434f; --muted:#5f6b7a;
+  --line:#e2e7ef; --line-strong:#c9d2df; --accent:#1d4ed8; --accent-wash:#eef3ff;
+  --bar:#2a78d6; --bar-wash:#dbe8f9; --on-accent:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0f141b; --surface:#161d26; --ink:#e7ecf3; --ink-soft:#c3cbd6; --muted:#8b97a6;
+    --line:#232c38; --line-strong:#33404f; --accent:#7ba4ff; --accent-wash:#17233a;
+    --bar:#3987e5; --bar-wash:#1c2d44; --on-accent:#0f141b;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0f141b; --surface:#161d26; --ink:#e7ecf3; --ink-soft:#c3cbd6; --muted:#8b97a6;
+  --line:#232c38; --line-strong:#33404f; --accent:#7ba4ff; --accent-wash:#17233a;
+  --bar:#3987e5; --bar-wash:#1c2d44; --on-accent:#0f141b;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased}
+.page{max-width:46rem; margin:0 auto; padding:clamp(1.25rem,4vw,3rem) 16px 4rem}
+h1,h2{font-family:"Source Serif 4",Georgia,serif; margin:0; text-wrap:balance}
+h1{font-size:clamp(1.9rem,5vw,2.6rem); font-weight:600; letter-spacing:-.01em; line-height:1.15}
+h2{font-size:1.25rem; font-weight:600; margin-top:2.25rem}
+p{margin:.6rem 0 0; color:var(--ink-soft)}
+a{color:var(--accent); text-underline-offset:2px}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-size:.75rem; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--accent); margin:0 0 .6rem}
+.controls{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.75rem; margin-top:1.75rem}
+@media (max-width:560px){.controls{grid-template-columns:1fr}}
+label{display:block; font-size:.8rem; font-weight:500; color:var(--muted); margin-bottom:.25rem}
+select{width:100%; font:inherit; color:var(--ink); background:var(--surface); border:1px solid var(--line-strong);
+  border-radius:8px; padding:.55rem .7rem}
+select:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.card{margin-top:1.25rem; background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:1.25rem 1.25rem 1.1rem}
+.role{font-weight:600; font-size:1.05rem}
+.meta{color:var(--muted); font-size:.85rem}
+.range{font-family:"Source Serif 4",Georgia,serif; font-size:clamp(1.7rem,6vw,2.4rem); font-weight:600;
+  line-height:1.2; margin-top:.5rem; font-variant-numeric:tabular-nums; letter-spacing:-.01em}
+.per{color:var(--ink-soft); white-space:nowrap}
+.also{color:var(--muted); font-size:.9rem; margin-top:.2rem; font-variant-numeric:tabular-nums}
+.sentence{margin-top:1rem; background:var(--accent-wash); border-radius:8px; padding:.8rem .9rem; color:var(--ink)}
+button{font:inherit; font-weight:500; margin-top:.6rem; background:var(--accent); color:var(--on-accent); border:0; border-radius:8px;
+  padding:.5rem .9rem; cursor:pointer}
+.copied{color:var(--muted); font-size:.85rem; margin-left:.6rem}
+.grades{margin-top:.75rem; display:grid; gap:.35rem}
+.g{display:grid; grid-template-columns:4.5rem minmax(4rem,1fr) 8.5rem; align-items:center; gap:.6rem; font-size:.85rem}
+.g.on{font-weight:600}
+.track{position:relative; height:12px; background:var(--line); border-radius:6px}
+.fill{position:absolute; top:0; height:12px; border-radius:6px; background:var(--bar); opacity:.35}
+.g.on .fill{opacity:1}
+.g.on .fill{background:var(--bar)}
+.num{text-align:right; font-variant-numeric:tabular-nums; color:var(--ink-soft)}
+ul{padding-left:1.2rem; margin:.6rem 0 0; color:var(--ink-soft)}
+li{margin:.3rem 0}
+footer{margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem}
+</style>
+</head>
+<body>
+<main class="page">
+  <p class="eyebrow">Directive (EU) 2023/970 · Article 5</p>
+  <h1>Pay range finder</h1>
+  <p>The pay range to publish in a job advertisement, for every role in every entity, taken from the
+     equal-value pay structure. Ranges are full-time base pay, rounded outwards so the published range
+     always contains the real one.</p>
+
+  <div class="controls">
+    <div><label for="country">Entity</label><select id="country"></select></div>
+    <div><label for="family">Family</label><select id="family"></select></div>
+    <div><label for="level">Level</label><select id="level"></select></div>
+  </div>
+
+  <section class="card" aria-live="polite">
+    <div class="role" id="role"></div>
+    <div class="meta" id="meta"></div>
+    <div class="range" id="range"></div>
+    <div class="also" id="also"></div>
+    <div class="sentence" id="sentence"></div>
+    <button type="button" id="copy">Copy the sentence</button><span class="copied" id="copied"></span>
+  </section>
+
+  <h2>Every grade in this entity</h2>
+  <p>Roles of equal value share a grade, whatever the family. The highlighted bar is the role above.</p>
+  <div class="grades" id="grades"></div>
+
+  <h2>What sets and moves the pay</h2>
+  <ul>
+    <li><strong>The grade</strong> comes from a gender-neutral job evaluation on the four criteria the Directive
+        names: skills, effort, responsibility and working conditions (Article 4).</li>
+    <li><strong>The range</strong> is the grade's range in the entity: its midpoint follows what large employers pay
+        for the same occupations, from Eurostat's earnings survey.</li>
+    <li><strong>The starting point</strong> within the range depends on relevant experience, and the move through it
+        on time in the grade and performance against the role's objectives (Article 6).</li>
+    <li>Applicants are not asked about their current or past pay (Article 5(2)).</li>
+  </ul>
+
+  <footer>Synthetic company, real market data: an illustration, not legal or pay advice.
+    Built from <a href="https://github.com/D0M3N1C0X/equal-value-pay-ranges">equal-value-pay-ranges</a>;
+    the full model is in <a href="equal_value_pay_ranges.xlsx">the Excel workbook</a> and the method in
+    <a href="index.html">the report</a>.</footer>
+</main>
+<script>
+const DATA = {"countries":[{"code":"IT","currency":"EUR","name":"IT · Milan","period":"year"},{"code":"PL","currency":"PLN","name":"PL · Kraków","period":"month"},{"code":"DE","currency":"EUR","name":"DE · Munich","period":"year"},{"code":"ES","currency":"EUR","name":"ES · Barcelona","period":"year"}],"families":["Customer Service","Operations","Tech","Sales","Finance","HR"],"grades":{"DE":[{"grade":"A","max":50278,"min":38675},{"grade":"B","max":54300,"min":41770},{"grade":"C","max":58644,"min":45111},{"grade":"D","max":78482,"min":56058},{"grade":"E","max":103004,"min":73574},{"grade":"F","max":146311,"min":97541},{"grade":"G","max":208082,"min":130052}],"ES":[{"grade":"A","max":30046,"min":23112},{"grade":"B","max":32449,"min":24961},{"grade":"C","max":35045,"min":26958},{"grade":"D","max":46900,"min":33500},{"grade":"E","max":61554,"min":43967},{"grade":"F","max":87434,"min":58289},{"grade":"G","max":124348,"min":77717}],"IT":[{"grade":"A","max":33270,"min":25592},{"grade":"B","max":35932,"min":27640},{"grade":"C","max":38806,"min":29851},{"grade":"D","max":51933,"min":37095},{"grade":"E","max":68160,"min":48686},{"grade":"F","max":96817,"min":64545},{"grade":"G","max":137692,"min":86058}],"PL":[{"grade":"A","max":93706,"min":72081},{"grade":"B","max":101202,"min":77848},{"grade":"C","max":109298,"min":84076},{"grade":"D","max":146270,"min":104479},{"grade":"E","max":191974,"min":137124},{"grade":"F","max":272688,"min":181792},{"grade":"G","max":387813,"min":242383}]},"levels":["L1","L2","L3","L4","L5","L6"],"ranges":{"Customer Service L1":{"DE":{"annual_max":54500,"annual_min":41500,"monthly_max":4600,"monthly_min":3400},"ES":{"annual_max":32500,"annual_min":24500,"monthly_max":2800,"monthly_min":2000},"IT":{"annual_max":36000,"annual_min":27500,"monthly_max":3000,"monthly_min":2300},"PL":{"annual_max":102000,"annual_min":77000,"monthly_max":8500,"monthly_min":6400}},"Customer Service L2":{"DE":{"annual_max":59000,"annual_min":45000,"monthly_max":4900,"monthly_min":3700},"ES":{"annual_max":35500,"annual_min":26500,"monthly_max":3000,"monthly_min":2200},"IT":{"annual_max":39000,"annual_min":29500,"monthly_max":3300,"monthly_min":2400},"PL":{"annual_max":110000,"annual_min":84000,"monthly_max":9200,"monthly_min":7000}},"Customer Service L3":{"DE":{"annual_max":78500,"annual_min":56000,"monthly_max":6600,"monthly_min":4600},"ES":{"annual_max":47000,"annual_min":33000,"monthly_max":4000,"monthly_min":2700},"IT":{"annual_max":52000,"annual_min":37000,"monthly_max":4400,"monthly_min":3000},"PL":{"annual_max":147000,"annual_min":104000,"monthly_max":12200,"monthly_min":8700}},"Customer Service L4":{"DE":{"annual_max":103500,"annual_min":73500,"monthly_max":8600,"monthly_min":6100},"ES":{"annual_max":62000,"annual_min":43500,"monthly_max":5200,"monthly_min":3600},"IT":{"annual_max":68500,"annual_min":48500,"monthly_max":5700,"monthly_min":4000},"PL":{"annual_max":192000,"annual_min":137000,"monthly_max":16000,"monthly_min":11400}},"Customer Service L5":{"DE":{"annual_max":146500,"annual_min":97500,"monthly_max":12200,"monthly_min":8100},"ES":{"annual_max":87500,"annual_min":58000,"monthly_max":7300,"monthly_min":4800},"IT":{"annual_max":97000,"annual_min":64500,"monthly_max":8100,"monthly_min":5300},"PL":{"annual_max":273000,"annual_min":181000,"monthly_max":22800,"monthly_min":15100}},"Customer Service L6":{"DE":{"annual_max":208500,"annual_min":130000,"monthly_max":17400,"monthly_min":10800},"ES":{"annual_max":124500,"annual_min":77500,"monthly_max":10400,"monthly_min":6400},"IT":{"annual_max":138000,"annual_min":86000,"monthly_max":11500,"monthly_min":7100},"PL":{"annual_max":388000,"annual_min":242000,"monthly_max":32400,"monthly_min":20100}},"Finance L1":{"DE":{"annual_max":50500,"annual_min":38500,"monthly_max":4200,"monthly_min":3200},"ES":{"annual_max":30500,"annual_min":23000,"monthly_max":2600,"monthly_min":1900},"IT":{"annual_max":33500,"annual_min":25500,"monthly_max":2800,"monthly_min":2100},"PL":{"annual_max":94000,"annual_min":72000,"monthly_max":7900,"monthly_min":6000}},"Finance L2":{"DE":{"annual_max":54500,"annual_min":41500,"monthly_max":4600,"monthly_min":3400},"ES":{"annual_max":32500,"annual_min":24500,"monthly_max":2800,"monthly_min":2000},"IT":{"annual_max":36000,"annual_min":27500,"monthly_max":3000,"monthly_min":2300},"PL":{"annual_max":102000,"annual_min":77000,"monthly_max":8500,"monthly_min":6400}},"Finance L3":{"DE":{"annual_max":78500,"annual_min":56000,"monthly_max":6600,"monthly_min":4600},"ES":{"annual_max":47000,"annual_min":33000,"monthly_max":4000,"monthly_min":2700},"IT":{"annual_max":52000,"annual_min":37000,"monthly_max":4400,"monthly_min":3000},"PL":{"annual_max":147000,"annual_min":104000,"monthly_max":12200,"monthly_min":8700}},"Finance L4":{"DE":{"annual_max":103500,"annual_min":73500,"monthly_max":8600,"monthly_min":6100},"ES":{"annual_max":62000,"annual_min":43500,"monthly_max":5200,"monthly_min":3600},"IT":{"annual_max":68500,"annual_min":48500,"monthly_max":5700,"monthly_min":4000},"PL":{"annual_max":192000,"annual_min":137000,"monthly_max":16000,"monthly_min":11400}},"Finance L5":{"DE":{"annual_max":146500,"annual_min":97500,"monthly_max":12200,"monthly_min":8100},"ES":{"annual_max":87500,"annual_min":58000,"monthly_max":7300,"monthly_min":4800},"IT":{"annual_max":97000,"annual_min":64500,"monthly_max":8100,"monthly_min":5300},"PL":{"annual_max":273000,"annual_min":181000,"monthly_max":22800,"monthly_min":15100}},"Finance L6":{"DE":{"annual_max":208500,"annual_min":130000,"monthly_max":17400,"monthly_min":10800},"ES":{"annual_max":124500,"annual_min":77500,"monthly_max":10400,"monthly_min":6400},"IT":{"annual_max":138000,"annual_min":86000,"monthly_max":11500,"monthly_min":7100},"PL":{"annual_max":388000,"annual_min":242000,"monthly_max":32400,"monthly_min":20100}},"HR L1":{"DE":{"annual_max":50500,"annual_min":38500,"monthly_max":4200,"monthly_min":3200},"ES":{"annual_max":30500,"annual_min":23000,"monthly_max":2600,"monthly_min":1900},"IT":{"annual_max":33500,"annual_min":25500,"monthly_max":2800,"monthly_min":2100},"PL":{"annual_max":94000,"annual_min":72000,"monthly_max":7900,"monthly_min":6000}},"HR L2":{"DE":{"annual_max":54500,"annual_min":41500,"monthly_max":4600,"monthly_min":3400},"ES":{"annual_max":32500,"annual_min":24500,"monthly_max":2800,"monthly_min":2000},"IT":{"annual_max":36000,"annual_min":27500,"monthly_max":3000,"monthly_min":2300},"PL":{"annual_max":102000,"annual_min":77000,"monthly_max":8500,"monthly_min":6400}},"HR L3":{"DE":{"annual_max":78500,"annual_min":56000,"monthly_max":6600,"monthly_min":4600},"ES":{"annual_max":47000,"annual_min":33000,"monthly_max":4000,"monthly_min":2700},"IT":{"annual_max":52000,"annual_min":37000,"monthly_max":4400,"monthly_min":3000},"PL":{"annual_max":147000,"annual_min":104000,"monthly_max":12200,"monthly_min":8700}},"HR L4":{"DE":{"annual_max":103500,"annual_min":73500,"monthly_max":8600,"monthly_min":6100},"ES":{"annual_max":62000,"annual_min":43500,"monthly_max":5200,"monthly_min":3600},"IT":{"annual_max":68500,"annual_min":48500,"monthly_max":5700,"monthly_min":4000},"PL":{"annual_max":192000,"annual_min":137000,"monthly_max":16000,"monthly_min":11400}},"HR L5":{"DE":{"annual_max":146500,"annual_min":97500,"monthly_max":12200,"monthly_min":8100},"ES":{"annual_max":87500,"annual_min":58000,"monthly_max":7300,"monthly_min":4800},"IT":{"annual_max":97000,"annual_min":64500,"monthly_max":8100,"monthly_min":5300},"PL":{"annual_max":273000,"annual_min":181000,"monthly_max":22800,"monthly_min":15100}},"HR L6":{"DE":{"annual_max":208500,"annual_min":130000,"monthly_max":17400,"monthly_min":10800},"ES":{"annual_max":124500,"annual_min":77500,"monthly_max":10400,"monthly_min":6400},"IT":{"annual_max":138000,"annual_min":86000,"monthly_max":11500,"monthly_min":7100},"PL":{"annual_max":388000,"annual_min":242000,"monthly_max":32400,"monthly_min":20100}},"Operations L1":{"DE":{"annual_max":54500,"annual_min":41500,"monthly_max":4600,"monthly_min":3400},"ES":{"annual_max":32500,"annual_min":24500,"monthly_max":2800,"monthly_min":2000},"IT":{"annual_max":36000,"annual_min":27500,"monthly_max":3000,"monthly_min":2300},"PL":{"annual_max":102000,"annual_min":77000,"monthly_max":8500,"monthly_min":6400}},"Operations L2":{"DE":{"annual_max":59000,"annual_min":45000,"monthly_max":4900,"monthly_min":3700},"ES":{"annual_max":35500,"annual_min":26500,"monthly_max":3000,"monthly_min":2200},"IT":{"annual_max":39000,"annual_min":29500,"monthly_max":3300,"monthly_min":2400},"PL":{"annual_max":110000,"annual_min":84000,"monthly_max":9200,"monthly_min":7000}},"Operations L3":{"DE":{"annual_max":78500,"annual_min":56000,"monthly_max":6600,"monthly_min":4600},"ES":{"annual_max":47000,"annual_min":33000,"monthly_max":4000,"monthly_min":2700},"IT":{"annual_max":52000,"annual_min":37000,"monthly_max":4400,"monthly_min":3000},"PL":{"annual_max":147000,"annual_min":104000,"monthly_max":12200,"monthly_min":8700}},"Operations L4":{"DE":{"annual_max":103500,"annual_min":73500,"monthly_max":8600,"monthly_min":6100},"ES":{"annual_max":62000,"annual_min":43500,"monthly_max":5200,"monthly_min":3600},"IT":{"annual_max":68500,"annual_min":48500,"monthly_max":5700,"monthly_min":4000},"PL":{"annual_max":192000,"annual_min":137000,"monthly_max":16000,"monthly_min":11400}},"Operations L5":{"DE":{"annual_max":146500,"annual_min":97500,"monthly_max":12200,"monthly_min":8100},"ES":{"annual_max":87500,"annual_min":58000,"monthly_max":7300,"monthly_min":4800},"IT":{"annual_max":97000,"annual_min":64500,"monthly_max":8100,"monthly_min":5300},"PL":{"annual_max":273000,"annual_min":181000,"monthly_max":22800,"monthly_min":15100}},"Operations L6":{"DE":{"annual_max":208500,"annual_min":130000,"monthly_max":17400,"monthly_min":10800},"ES":{"annual_max":124500,"annual_min":77500,"monthly_max":10400,"monthly_min":6400},"IT":{"annual_max":138000,"annual_min":86000,"monthly_max":11500,"monthly_min":7100},"PL":{"annual_max":388000,"annual_min":242000,"monthly_max":32400,"monthly_min":20100}},"Sales L1":{"DE":{"annual_max":50500,"annual_min":38500,"monthly_max":4200,"monthly_min":3200},"ES":{"annual_max":30500,"annual_min":23000,"monthly_max":2600,"monthly_min":1900},"IT":{"annual_max":33500,"annual_min":25500,"monthly_max":2800,"monthly_min":2100},"PL":{"annual_max":94000,"annual_min":72000,"monthly_max":7900,"monthly_min":6000}},"Sales L2":{"DE":{"annual_max":59000,"annual_min":45000,"monthly_max":4900,"monthly_min":3700},"ES":{"annual_max":35500,"annual_min":26500,"monthly_max":3000,"monthly_min":2200},"IT":{"annual_max":39000,"annual_min":29500,"monthly_max":3300,"monthly_min":2400},"PL":{"annual_max":110000,"annual_min":84000,"monthly_max":9200,"monthly_min":7000}},"Sales L3":{"DE":{"annual_max":78500,"annual_min":56000,"monthly_max":6600,"monthly_min":4600},"ES":{"annual_max":47000,"annual_min":33000,"monthly_max":4000,"monthly_min":2700},"IT":{"annual_max":52000,"annual_min":37000,"monthly_max":4400,"monthly_min":3000},"PL":{"annual_max":147000,"annual_min":104000,"monthly_max":12200,"monthly_min":8700}},"Sales L4":{"DE":{"annual_max":103500,"annual_min":73500,"monthly_max":8600,"monthly_min":6100},"ES":{"annual_max":62000,"annual_min":43500,"monthly_max":5200,"monthly_min":3600},"IT":{"annual_max":68500,"annual_min":48500,"monthly_max":5700,"monthly_min":4000},"PL":{"annual_max":192000,"annual_min":137000,"monthly_max":16000,"monthly_min":11400}},"Sales L5":{"DE":{"annual_max":146500,"annual_min":97500,"monthly_max":12200,"monthly_min":8100},"ES":{"annual_max":87500,"annual_min":58000,"monthly_max":7300,"monthly_min":4800},"IT":{"annual_max":97000,"annual_min":64500,"monthly_max":8100,"monthly_min":5300},"PL":{"annual_max":273000,"annual_min":181000,"monthly_max":22800,"monthly_min":15100}},"Sales L6":{"DE":{"annual_max":208500,"annual_min":130000,"monthly_max":17400,"monthly_min":10800},"ES":{"annual_max":124500,"annual_min":77500,"monthly_max":10400,"monthly_min":6400},"IT":{"annual_max":138000,"annual_min":86000,"monthly_max":11500,"monthly_min":7100},"PL":{"annual_max":388000,"annual_min":242000,"monthly_max":32400,"monthly_min":20100}},"Tech L1":{"DE":{"annual_max":50500,"annual_min":38500,"monthly_max":4200,"monthly_min":3200},"ES":{"annual_max":30500,"annual_min":23000,"monthly_max":2600,"monthly_min":1900},"IT":{"annual_max":33500,"annual_min":25500,"monthly_max":2800,"monthly_min":2100},"PL":{"annual_max":94000,"annual_min":72000,"monthly_max":7900,"monthly_min":6000}},"Tech L2":{"DE":{"annual_max":54500,"annual_min":41500,"monthly_max":4600,"monthly_min":3400},"ES":{"annual_max":32500,"annual_min":24500,"monthly_max":2800,"monthly_min":2000},"IT":{"annual_max":36000,"annual_min":27500,"monthly_max":3000,"monthly_min":2300},"PL":{"annual_max":102000,"annual_min":77000,"monthly_max":8500,"monthly_min":6400}},"Tech L3":{"DE":{"annual_max":78500,"annual_min":56000,"monthly_max":6600,"monthly_min":4600},"ES":{"annual_max":47000,"annual_min":33000,"monthly_max":4000,"monthly_min":2700},"IT":{"annual_max":52000,"annual_min":37000,"monthly_max":4400,"monthly_min":3000},"PL":{"annual_max":147000,"annual_min":104000,"monthly_max":12200,"monthly_min":8700}},"Tech L4":{"DE":{"annual_max":103500,"annual_min":73500,"monthly_max":8600,"monthly_min":6100},"ES":{"annual_max":62000,"annual_min":43500,"monthly_max":5200,"monthly_min":3600},"IT":{"annual_max":68500,"annual_min":48500,"monthly_max":5700,"monthly_min":4000},"PL":{"annual_max":192000,"annual_min":137000,"monthly_max":16000,"monthly_min":11400}},"Tech L5":{"DE":{"annual_max":146500,"annual_min":97500,"monthly_max":12200,"monthly_min":8100},"ES":{"annual_max":87500,"annual_min":58000,"monthly_max":7300,"monthly_min":4800},"IT":{"annual_max":97000,"annual_min":64500,"monthly_max":8100,"monthly_min":5300},"PL":{"annual_max":273000,"annual_min":181000,"monthly_max":22800,"monthly_min":15100}},"Tech L6":{"DE":{"annual_max":208500,"annual_min":130000,"monthly_max":17400,"monthly_min":10800},"ES":{"annual_max":124500,"annual_min":77500,"monthly_max":10400,"monthly_min":6400},"IT":{"annual_max":138000,"annual_min":86000,"monthly_max":11500,"monthly_min":7100},"PL":{"annual_max":388000,"annual_min":242000,"monthly_max":32400,"monthly_min":20100}}},"roles":[{"family":"Customer Service","grade":"B","level":"L1","points":175,"role":"Customer Service L1"},{"family":"Customer Service","grade":"C","level":"L2","points":210,"role":"Customer Service L2"},{"family":"Customer Service","grade":"D","level":"L3","points":280,"role":"Customer Service L3"},{"family":"Customer Service","grade":"E","level":"L4","points":320,"role":"Customer Service L4"},{"family":"Customer Service","grade":"F","level":"L5","points":340,"role":"Customer Service L5"},{"family":"Customer Service","grade":"G","level":"L6","points":410,"role":"Customer Service L6"},{"family":"Operations","grade":"B","level":"L1","points":190,"role":"Operations L1"},{"family":"Operations","grade":"C","level":"L2","points":225,"role":"Operations L2"},{"family":"Operations","grade":"D","level":"L3","points":295,"role":"Operations L3"},{"family":"Operations","grade":"E","level":"L4","points":335,"role":"Operations L4"},{"family":"Operations","grade":"F","level":"L5","points":340,"role":"Operations L5"},{"family":"Operations","grade":"G","level":"L6","points":410,"role":"Operations L6"},{"family":"Tech","grade":"A","level":"L1","points":150,"role":"Tech L1"},{"family":"Tech","grade":"B","level":"L2","points":185,"role":"Tech L2"},{"family":"Tech","grade":"D","level":"L3","points":255,"role":"Tech L3"},{"family":"Tech","grade":"E","level":"L4","points":325,"role":"Tech L4"},{"family":"Tech","grade":"F","level":"L5","points":340,"role":"Tech L5"},{"family":"Tech","grade":"G","level":"L6","points":410,"role":"Tech L6"},{"family":"Sales","grade":"A","level":"L1","points":145,"role":"Sales L1"},{"family":"Sales","grade":"C","level":"L2","points":215,"role":"Sales L2"},{"family":"Sales","grade":"D","level":"L3","points":285,"role":"Sales L3"},{"family":"Sales","grade":"E","level":"L4","points":320,"role":"Sales L4"},{"family":"Sales","grade":"F","level":"L5","points":340,"role":"Sales L5"},{"family":"Sales","grade":"G","level":"L6","points":410,"role":"Sales L6"},{"family":"Finance","grade":"A","level":"L1","points":115,"role":"Finance L1"},{"family":"Finance","grade":"B","level":"L2","points":185,"role":"Finance L2"},{"family":"Finance","grade":"D","level":"L3","points":255,"role":"Finance L3"},{"family":"Finance","grade":"E","level":"L4","points":325,"role":"Finance L4"},{"family":"Finance","grade":"F","level":"L5","points":340,"role":"Finance L5"},{"family":"Finance","grade":"G","level":"L6","points":410,"role":"Finance L6"},{"family":"HR","grade":"A","level":"L1","points":115,"role":"HR L1"},{"family":"HR","grade":"B","level":"L2","points":185,"role":"HR L2"},{"family":"HR","grade":"D","level":"L3","points":255,"role":"HR L3"},{"family":"HR","grade":"E","level":"L4","points":325,"role":"HR L4"},{"family":"HR","grade":"F","level":"L5","points":340,"role":"HR L5"},{"family":"HR","grade":"G","level":"L6","points":410,"role":"HR L6"}]};
+const $ = (id) => document.getElementById(id);
+const fmt = (x) => x.toLocaleString("en-GB", {maximumFractionDigits: 0});
+function fill(sel, items, value) {
+  sel.innerHTML = items.map(([v, t]) => `<option value="${v}">${t}</option>`).join("");
+  if (value && items.some(([v]) => v === value)) sel.value = value;
+}
+function state() {
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem("prf") || "{}"); } catch (e) { saved = {}; }
+  return saved;
+}
+function render() {
+  const c = $("country").value, f = $("family").value, l = $("level").value;
+  try { localStorage.setItem("prf", JSON.stringify({c, f, l})); } catch (e) {}
+  const role = DATA.roles.find((r) => r.family === f && r.level === l);
+  const country = DATA.countries.find((x) => x.code === c);
+  const r = DATA.ranges[role.role][c];
+  const monthly = country.period === "month";
+  const lo = monthly ? r.monthly_min : r.annual_min, hi = monthly ? r.monthly_max : r.annual_max;
+  $("role").textContent = `${role.role} · ${country.name}`;
+  $("meta").textContent = `Grade ${role.grade} · ${role.points} job evaluation points`;
+  $("range").innerHTML = `${country.currency} ${fmt(lo)} – ${fmt(hi)} <span class="per">per ${country.period}</span>`;
+  $("also").textContent = monthly
+    ? `${country.currency} ${fmt(r.annual_min)} – ${fmt(r.annual_max)} a year`
+    : `${country.currency} ${fmt(r.monthly_min)} – ${fmt(r.monthly_max)} a month over twelve payments`;
+  $("sentence").textContent = `Pay: ${country.currency} ${fmt(lo)}–${fmt(hi)} gross per ${country.period} for a full-time role. ` +
+    `The range is set by the role's grade in our gender-neutral job evaluation; the starting point depends on relevant experience.`;
+  $("copied").textContent = "";
+  // position encoding, not length: the axis starts just below grade A's minimum
+  const grades = DATA.grades[c], top = Math.max(...grades.map((g) => g.max)), base = grades[0].min * 0.9;
+  const at = (v) => (v - base) / (top - base) * 100;
+  $("grades").innerHTML = grades.map((g) => `
+    <div class="g${g.grade === role.grade ? " on" : ""}">
+      <span>Grade ${g.grade}</span>
+      <span class="track"><span class="fill" style="left:${at(g.min)}%;width:${at(g.max) - at(g.min)}%"></span></span>
+      <span class="num">${country.currency} ${fmt(g.min / 1000)}k – ${fmt(g.max / 1000)}k</span>
+    </div>`).join("");
+}
+const saved = state();
+fill($("country"), DATA.countries.map((x) => [x.code, x.name]), saved.c);
+fill($("family"), DATA.families.map((x) => [x, x]), saved.f);
+fill($("level"), DATA.levels.map((x) => [x, x]), saved.l);
+["country", "family", "level"].forEach((id) => $(id).addEventListener("change", render));
+$("copy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("sentence").textContent); $("copied").textContent = "Copied"; }
+  catch (e) { $("copied").textContent = "Select the text to copy it"; }
+});
+render();
+</script>
+</body>
+</html>

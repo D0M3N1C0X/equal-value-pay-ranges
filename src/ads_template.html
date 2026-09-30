@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pay Range Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --paper:#fbfcfd; --surface:#ffffff; --ink:#131a24; --ink-soft:#39434f; --muted:#5f6b7a;
+  --line:#e2e7ef; --line-strong:#c9d2df; --accent:#1d4ed8; --accent-wash:#eef3ff;
+  --bar:#2a78d6; --bar-wash:#dbe8f9; --on-accent:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0f141b; --surface:#161d26; --ink:#e7ecf3; --ink-soft:#c3cbd6; --muted:#8b97a6;
+    --line:#232c38; --line-strong:#33404f; --accent:#7ba4ff; --accent-wash:#17233a;
+    --bar:#3987e5; --bar-wash:#1c2d44; --on-accent:#0f141b;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0f141b; --surface:#161d26; --ink:#e7ecf3; --ink-soft:#c3cbd6; --muted:#8b97a6;
+  --line:#232c38; --line-strong:#33404f; --accent:#7ba4ff; --accent-wash:#17233a;
+  --bar:#3987e5; --bar-wash:#1c2d44; --on-accent:#0f141b;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased}
+.page{max-width:46rem; margin:0 auto; padding:clamp(1.25rem,4vw,3rem) 16px 4rem}
+h1,h2{font-family:"Source Serif 4",Georgia,serif; margin:0; text-wrap:balance}
+h1{font-size:clamp(1.9rem,5vw,2.6rem); font-weight:600; letter-spacing:-.01em; line-height:1.15}
+h2{font-size:1.25rem; font-weight:600; margin-top:2.25rem}
+p{margin:.6rem 0 0; color:var(--ink-soft)}
+a{color:var(--accent); text-underline-offset:2px}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-size:.75rem; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--accent); margin:0 0 .6rem}
+.controls{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.75rem; margin-top:1.75rem}
+@media (max-width:560px){.controls{grid-template-columns:1fr}}
+label{display:block; font-size:.8rem; font-weight:500; color:var(--muted); margin-bottom:.25rem}
+select{width:100%; font:inherit; color:var(--ink); background:var(--surface); border:1px solid var(--line-strong);
+  border-radius:8px; padding:.55rem .7rem}
+select:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.card{margin-top:1.25rem; background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:1.25rem 1.25rem 1.1rem}
+.role{font-weight:600; font-size:1.05rem}
+.meta{color:var(--muted); font-size:.85rem}
+.range{font-family:"Source Serif 4",Georgia,serif; font-size:clamp(1.7rem,6vw,2.4rem); font-weight:600;
+  line-height:1.2; margin-top:.5rem; font-variant-numeric:tabular-nums; letter-spacing:-.01em}
+.per{color:var(--ink-soft); white-space:nowrap}
+.also{color:var(--muted); font-size:.9rem; margin-top:.2rem; font-variant-numeric:tabular-nums}
+.sentence{margin-top:1rem; background:var(--accent-wash); border-radius:8px; padding:.8rem .9rem; color:var(--ink)}
+button{font:inherit; font-weight:500; margin-top:.6rem; background:var(--accent); color:var(--on-accent); border:0; border-radius:8px;
+  padding:.5rem .9rem; cursor:pointer}
+.copied{color:var(--muted); font-size:.85rem; margin-left:.6rem}
+.grades{margin-top:.75rem; display:grid; gap:.35rem}
+.g{display:grid; grid-template-columns:4.5rem minmax(4rem,1fr) 8.5rem; align-items:center; gap:.6rem; font-size:.85rem}
+.g.on{font-weight:600}
+.track{position:relative; height:12px; background:var(--line); border-radius:6px}
+.fill{position:absolute; top:0; height:12px; border-radius:6px; background:var(--bar); opacity:.35}
+.g.on .fill{opacity:1}
+.g.on .fill{background:var(--bar)}
+.num{text-align:right; font-variant-numeric:tabular-nums; color:var(--ink-soft)}
+ul{padding-left:1.2rem; margin:.6rem 0 0; color:var(--ink-soft)}
+li{margin:.3rem 0}
+footer{margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem}
+</style>
+</head>
+<body>
+<main class="page">
+  <p class="eyebrow">Directive (EU) 2023/970 · Article 5</p>
+  <h1>Pay range finder</h1>
+  <p>The pay range to publish in a job advertisement, for every role in every entity, taken from the
+     equal-value pay structure. Ranges are full-time base pay, rounded outwards so the published range
+     always contains the real one.</p>
+
+  <div class="controls">
+    <div><label for="country">Entity</label><select id="country"></select></div>
+    <div><label for="family">Family</label><select id="family"></select></div>
+    <div><label for="level">Level</label><select id="level"></select></div>
+  </div>
+
+  <section class="card" aria-live="polite">
+    <div class="role" id="role"></div>
+    <div class="meta" id="meta"></div>
+    <div class="range" id="range"></div>
+    <div class="also" id="also"></div>
+    <div class="sentence" id="sentence"></div>
+    <button type="button" id="copy">Copy the sentence</button><span class="copied" id="copied"></span>
+  </section>
+
+  <h2>Every grade in this entity</h2>
+  <p>Roles of equal value share a grade, whatever the family. The highlighted bar is the role above.</p>
+  <div class="grades" id="grades"></div>
+
+  <h2>What sets and moves the pay</h2>
+  <ul>
+    <li><strong>The grade</strong> comes from a gender-neutral job evaluation on the four criteria the Directive
+        names: skills, effort, responsibility and working conditions (Article 4).</li>
+    <li><strong>The range</strong> is the grade's range in the entity: its midpoint follows what large employers pay
+        for the same occupations, from Eurostat's earnings survey.</li>
+    <li><strong>The starting point</strong> within the range depends on relevant experience, and the move through it
+        on time in the grade and performance against the role's objectives (Article 6).</li>
+    <li>Applicants are not asked about their current or past pay (Article 5(2)).</li>
+  </ul>
+
+  <footer>Synthetic company, real market data: an illustration, not legal or pay advice.
+    Built from <a href="https://github.com/D0M3N1C0X/equal-value-pay-ranges">equal-value-pay-ranges</a>;
+    the full model is in <a href="equal_value_pay_ranges.xlsx">the Excel workbook</a> and the method in
+    <a href="index.html">the report</a>.</footer>
+</main>
+<script>
+const DATA = __DATA__;
+const $ = (id) => document.getElementById(id);
+const fmt = (x) => x.toLocaleString("en-GB", {maximumFractionDigits: 0});
+function fill(sel, items, value) {
+  sel.innerHTML = items.map(([v, t]) => `<option value="${v}">${t}</option>`).join("");
+  if (value && items.some(([v]) => v === value)) sel.value = value;
+}
+function state() {
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem("prf") || "{}"); } catch (e) { saved = {}; }
+  return saved;
+}
+function render() {
+  const c = $("country").value, f = $("family").value, l = $("level").value;
+  try { localStorage.setItem("prf", JSON.stringify({c, f, l})); } catch (e) {}
+  const role = DATA.roles.find((r) => r.family === f && r.level === l);
+  const country = DATA.countries.find((x) => x.code === c);
+  const r = DATA.ranges[role.role][c];
+  const monthly = country.period === "month";
+  const lo = monthly ? r.monthly_min : r.annual_min, hi = monthly ? r.monthly_max : r.annual_max;
+  $("role").textContent = `${role.role} · ${country.name}`;
+  $("meta").textContent = `Grade ${role.grade} · ${role.points} job evaluation points`;
+  $("range").innerHTML = `${country.currency} ${fmt(lo)} – ${fmt(hi)} <span class="per">per ${country.period}</span>`;
+  $("also").textContent = monthly
+    ? `${country.currency} ${fmt(r.annual_min)} – ${fmt(r.annual_max)} a year`
+    : `${country.currency} ${fmt(r.monthly_min)} – ${fmt(r.monthly_max)} a month over twelve payments`;
+  $("sentence").textContent = `Pay: ${country.currency} ${fmt(lo)}–${fmt(hi)} gross per ${country.period} for a full-time role. ` +
+    `The range is set by the role's grade in our gender-neutral job evaluation; the starting point depends on relevant experience.`;
+  $("copied").textContent = "";
+  // position encoding, not length: the axis starts just below grade A's minimum
+  const grades = DATA.grades[c], top = Math.max(...grades.map((g) => g.max)), base = grades[0].min * 0.9;
+  const at = (v) => (v - base) / (top - base) * 100;
+  $("grades").innerHTML = grades.map((g) => `
+    <div class="g${g.grade === role.grade ? " on" : ""}">
+      <span>Grade ${g.grade}</span>
+      <span class="track"><span class="fill" style="left:${at(g.min)}%;width:${at(g.max) - at(g.min)}%"></span></span>
+      <span class="num">${country.currency} ${fmt(g.min / 1000)}k – ${fmt(g.max / 1000)}k</span>
+    </div>`).join("");
+}
+const saved = state();
+fill($("country"), DATA.countries.map((x) => [x.code, x.name]), saved.c);
+fill($("family"), DATA.families.map((x) => [x, x]), saved.f);
+fill($("level"), DATA.levels.map((x) => [x, x]), saved.l);
+["country", "family", "level"].forEach((id) => $(id).addEventListener("change", render));
+$("copy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("sentence").textContent); $("copied").textContent = "Copied"; }
+  catch (e) { $("copied").textContent = "Select the text to copy it"; }
+});
+render();
+</script>
+</body>
+</html>
