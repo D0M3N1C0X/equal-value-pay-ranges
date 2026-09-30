@@ -1,0 +1,215 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Equal-Value Pay Ranges</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --paper:#fbfcfd; --surface:#ffffff; --ink:#131a24; --ink-soft:#39434f; --muted:#5f6b7a;
+  --line:#e2e7ef; --line-strong:#c9d2df; --accent:#1d4ed8; --accent-wash:#eef3ff;
+  --flag:#b5352c; --flag-wash:#fdeceb; --ok:#0c6b59; --ok-wash:#e8f5f1;
+  --warn:#8a5a00; --warn-wash:#fdf3dc;
+  --plate:#fcfcfb; --plate-edge:#dde4ee; --shadow:0 1px 2px rgba(19,26,36,.06),0 8px 24px rgba(19,26,36,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0f141b; --surface:#161d26; --ink:#e7ecf3; --ink-soft:#c3cbd6; --muted:#8b97a6;
+    --line:#232c38; --line-strong:#33404f; --accent:#7ba4ff; --accent-wash:#17233a;
+    --flag:#f08a80; --flag-wash:#2e1b1a; --ok:#5fc6ae; --ok-wash:#12291f;
+    --warn:#f0c060; --warn-wash:#2e2512;
+    --plate:#1a1a19; --plate-edge:#2b3542; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0f141b; --surface:#161d26; --ink:#e7ecf3; --ink-soft:#c3cbd6; --muted:#8b97a6;
+  --line:#232c38; --line-strong:#33404f; --accent:#7ba4ff; --accent-wash:#17233a;
+  --flag:#f08a80; --flag-wash:#2e1b1a; --ok:#5fc6ae; --ok-wash:#12291f;
+  --warn:#f0c060; --warn-wash:#2e2512;
+  --plate:#1a1a19; --plate-edge:#2b3542; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:17px; line-height:1.68; -webkit-font-smoothing:antialiased;
+}
+.page{padding:clamp(1.25rem,4vw,3.5rem) clamp(1rem,4vw,2rem) 5rem}
+.doc{display:grid; gap:1.5rem; justify-items:center}
+.doc > *{width:100%; max-width:42rem; margin:0}
+.doc > figure, .doc > .table-wrap{max-width:57rem}
+
+h1,h2,h3{font-family:"Source Serif 4",Georgia,"Times New Roman",serif; text-wrap:balance; margin:0}
+h1{font-size:clamp(2.1rem,5.5vw,3.1rem); font-weight:600; letter-spacing:-.015em; line-height:1.12}
+h2{font-size:clamp(1.5rem,3.4vw,2rem); font-weight:600; letter-spacing:-.01em;
+   display:flex; align-items:baseline; gap:.75rem; padding-top:2.5rem;
+   border-top:1px solid var(--line); margin-top:1.5rem}
+h2 .num{
+  font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.8rem;
+  font-weight:500; color:var(--accent); letter-spacing:.08em; transform:translateY(-.15em);
+}
+h3{font-size:1.22rem; font-weight:600; padding-top:1.25rem}
+p{margin:0; color:var(--ink-soft)}
+strong{color:var(--ink); font-weight:600}
+a{color:var(--accent); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1px}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:2px}
+
+.masthead{border-bottom:2px solid var(--ink); padding-bottom:1.5rem}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.72rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:1rem
+}
+dl.meta{display:grid; grid-template-columns:auto 1fr; gap:.4rem 1.25rem; margin:1.4rem 0 0; font-size:.94rem}
+dl.meta dt{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); padding-top:.28em
+}
+dl.meta dd{margin:0; color:var(--ink-soft)}
+
+.notice{
+  background:var(--accent-wash); border-left:3px solid var(--accent); border-radius:0 4px 4px 0;
+  padding:1rem 1.25rem; font-size:.95rem; color:var(--ink-soft)
+}
+p.note{font-size:.9rem; color:var(--muted)}
+
+figure{display:flex; flex-direction:column; gap:.6rem}
+figure .plate{
+  background:var(--plate); border:1px solid var(--plate-edge); border-radius:6px;
+  box-shadow:var(--shadow); padding:.5rem; overflow-x:auto
+}
+figure svg{display:block; width:100%; height:auto; min-width:32rem}
+figcaption{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.72rem; letter-spacing:.06em;
+  color:var(--muted); text-transform:uppercase
+}
+
+.table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:.92rem; font-variant-numeric:tabular-nums}
+th,td{padding:.62rem .9rem; text-align:left; border-bottom:1px solid var(--line)}
+thead th{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.68rem; font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted);
+  border-bottom:1px solid var(--line-strong); white-space:nowrap
+}
+tbody tr:last-child td{border-bottom:none}
+td.r,th.r{text-align:right}
+td.r{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.86rem}
+
+.pill{
+  display:inline-block; padding:.14em .6em; border-radius:999px; font-size:.72rem;
+  font-weight:600; letter-spacing:.02em; white-space:nowrap
+}
+.pill.flag{background:var(--flag-wash); color:var(--flag)}
+.pill.ok{background:var(--ok-wash); color:var(--ok)}
+.pill.warn{background:var(--warn-wash); color:var(--warn)}
+ul{margin:0; padding-left:1.2rem; display:grid; gap:.5rem; color:var(--ink-soft)}
+ul li::marker{color:var(--accent)}
+
+code{
+  font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.86em;
+  background:var(--accent-wash); color:var(--ink); padding:.1em .35em; border-radius:3px
+}
+ol{margin:0; padding-left:1.3rem; display:grid; gap:.75rem; color:var(--ink-soft)}
+ol li::marker{color:var(--accent); font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.85em}
+hr{border:none; height:1px; background:var(--line); margin:1rem 0}
+
+footer.colophon{
+  max-width:42rem; margin:3rem auto 0; padding-top:1.25rem; border-top:1px solid var(--line);
+  font-size:.85rem; color:var(--muted)
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  dl.meta{grid-template-columns:1fr; gap:.15rem}
+  dl.meta dd{margin-bottom:.5rem}
+}
+</style>
+</head><body><div class="page"><article class="doc"><header class="masthead"><p class="eyebrow">Reward review &middot; Directive (EU) 2023/970, Articles 4 to 6</p><h1>From family bands to equal-value pay ranges</h1>
+<dl class="meta"><dt>Scope</dt><dd>IT · Milan, PL · Kraków, DE · Munich and ES · Barcelona; 3,443 employees on the payroll at 30 June 2026, 36 roles in six families</dd><dt>Market</dt><dd>Eurostat Structure of Earnings Survey 2022 by occupation, aged to mid-2026 with the labour cost index, plus a 8.1% large-employer premium</dd><dt>Data</dt><dd>employees and current bands synthetic, from <a href="https://github.com/D0M3N1C0X/hr-people-analytics">hr-people-analytics</a>; job evaluation from <a href="https://github.com/D0M3N1C0X/pay-transparency-readiness-kit">pay-transparency-readiness-kit</a>; market figures real, with their sources in <a href="https://github.com/D0M3N1C0X/equal-value-pay-ranges/blob/main/docs/verification.md">docs/verification.md</a></dd></dl></header>
+<div class="notice">The Pay Transparency Directive asks for pay structures that compare work of equal value on objective, gender-neutral criteria (Article 4), a pay range for every vacancy (Article 5) and accessible criteria for pay and progression (Article 6). This review tests the company's bands against all three. Not legal advice.</div>
+<h2><span>The answer</span></h2>
+<ul><li><strong>The current bands pay the family, not the job.</strong> At the same level, Tech's midpoint is 39% above Customer Service's. Inside grade B, Tech L2 (185 points) has a midpoint 74% above Customer Service L1 (175 points). The evaluation gives no reason for the difference; if the company keeps it, it needs a documented one.</li><li><strong>One pay scale, four markets.</strong> Against large employers for the same occupations, payroll is +13.6% in Poland, −1.0% in Spain, −7.0% in Italy and −9.7% in Germany. The bands put Poland at 81% of Italy; the market puts it at 66%.</li><li><strong>Bringing everyone to the new minimum costs €3.02M a year for 824 people, 58% of it for women.</strong> In Italy 42% of women fall below the minimum against 26% of men. The families the bands pay least employ more women: Customer Service is 55% women and HR 58%, Tech 41%.</li><li><strong>739 people are paid above their new maximum, €3.48M a year, 66% of it in Poland.</strong> Their pay is protected, not cut; at Polish wage growth the ranges catch up in about 1.3 years.</li><li><strong>Every role now has a range to advertise.</strong> Customer Service L1: EUR 27,500 – 36,000 gross per year in Italy, PLN 6,400 – 8,500 gross per month in Poland. All 144 are in <a href="equal_value_pay_ranges.xlsx">the workbook</a> and the <a href="ads.html">range finder</a>.</li></ul>
+<h2><span class="num">01</span><span>How the current bands are built</span></h2>
+<p>Each band midpoint is a country factor times a family premium times a level step. At every level the premium is the same:</p>
+<div class="table-wrap"><table><thead><tr><th>Family</th><th class="r">Italy L3 midpoint</th><th class="r">vs Customer Service</th><th class="r">Share of staff</th><th class="r">Women</th></tr></thead><tbody><tr><td>Customer Service</td><td class="r">€37k</td><td class="r">+0%</td><td class="r">29%</td><td class="r">55%</td></tr><tr><td>Operations</td><td class="r">€40k</td><td class="r">+6%</td><td class="r">25%</td><td class="r">48%</td></tr><tr><td>Tech</td><td class="r">€52k</td><td class="r">+39%</td><td class="r">16%</td><td class="r">41%</td></tr><tr><td>Sales</td><td class="r">€44k</td><td class="r">+17%</td><td class="r">13%</td><td class="r">51%</td></tr><tr><td>Finance</td><td class="r">€46k</td><td class="r">+22%</td><td class="r">10%</td><td class="r">47%</td></tr><tr><td>HR</td><td class="r">€42k</td><td class="r">+11%</td><td class="r">8%</td><td class="r">58%</td></tr></tbody></table></div>
+<p>The job evaluation scores the four Article 4(4) criteria (skills, effort, responsibility, working conditions) and groups roles into seven grades of equal value. Customer Service and Operations score high on effort and working conditions, which the family premiums ignore.</p>
+<figure><div class="plate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 468" role="img" aria-label="Italy: one range per grade where there were up to six family bands"><style>
+  svg { --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --axis:#c3c2b7;
+        --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --base:#0b0b0b; --up:#e34948; --down:#2a78d6; }
+  @media (prefers-color-scheme: dark) {
+    svg { --surface:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781; --grid:#2c2c2a; --axis:#383835;
+          --s1:#3987e5; --s2:#d95926; --s3:#199e70; --base:#ffffff; --up:#e66767; --down:#3987e5; }
+  }
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; fill: var(--ink2); font-size: 12px; }
+  .title { fill: var(--ink); font-size: 15px; font-weight: 600; }
+  .muted { fill: var(--muted); font-size: 11px; }
+  .val { fill: var(--ink); font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--surface);
+         stroke-width: 4px; stroke-linejoin: round; }
+  .inbar { fill: #ffffff; font-weight: 600; font-variant-numeric: tabular-nums; }
+</style><rect width="720" height="468" rx="8" fill="var(--surface)"/><text class="title" x="24" y="34">Italy: one range per grade where there were up to six family bands</text><text x="24" y="56">New range by grade (full-time annual base pay) and the current midpoint of each role in the grade</text><line x1="90.0" y1="88" x2="90.0" y2="414" stroke="var(--grid)"/><text class="muted" x="90.0" y="432" text-anchor="middle">€0k</text><line x1="171.6" y1="88" x2="171.6" y2="414" stroke="var(--grid)"/><text class="muted" x="171.6" y="432" text-anchor="middle">€20k</text><line x1="253.2" y1="88" x2="253.2" y2="414" stroke="var(--grid)"/><text class="muted" x="253.2" y="432" text-anchor="middle">€40k</text><line x1="334.9" y1="88" x2="334.9" y2="414" stroke="var(--grid)"/><text class="muted" x="334.9" y="432" text-anchor="middle">€60k</text><line x1="416.5" y1="88" x2="416.5" y2="414" stroke="var(--grid)"/><text class="muted" x="416.5" y="432" text-anchor="middle">€80k</text><line x1="498.1" y1="88" x2="498.1" y2="414" stroke="var(--grid)"/><text class="muted" x="498.1" y="432" text-anchor="middle">€100k</text><line x1="579.7" y1="88" x2="579.7" y2="414" stroke="var(--grid)"/><text class="muted" x="579.7" y="432" text-anchor="middle">€120k</text><line x1="661.3" y1="88" x2="661.3" y2="414" stroke="var(--grid)"/><text class="muted" x="661.3" y="432" text-anchor="middle">€140k</text><text x="76" y="118" text-anchor="end">Grade A</text><rect x="194.4" y="106" width="31.3" height="18" rx="3" fill="var(--s1)" opacity="0.35"><title>Grade A: €26k to €33k, midpoint €29k</title></rect><line x1="210.1" y1="103" x2="210.1" y2="127" stroke="var(--s1)" stroke-width="2.5"/><circle cx="196.1" cy="115" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>HR L1: current midpoint €26k</title></circle><circle cx="201.4" cy="115" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Sales L1: current midpoint €27k</title></circle><circle cx="206.7" cy="115" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Finance L1: current midpoint €29k</title></circle><circle cx="222.6" cy="115" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Tech L1: current midpoint €32k</title></circle><text x="76" y="162" text-anchor="end">Grade B</text><rect x="202.8" y="150" width="33.8" height="18" rx="3" fill="var(--s1)" opacity="0.35"><title>Grade B: €28k to €36k, midpoint €32k</title></rect><line x1="219.7" y1="147" x2="219.7" y2="171" stroke="var(--s1)" stroke-width="2.5"/><circle cx="185.5" cy="159" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Customer Service L1: current midpoint €23k</title></circle><circle cx="190.8" cy="159" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Operations L1: current midpoint €25k</title></circle><circle cx="222.6" cy="159" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>HR L2: current midpoint €32k</title></circle><circle cx="236.1" cy="159" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Finance L2: current midpoint €36k</title></circle><circle cx="255.7" cy="159" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Tech L2: current midpoint €41k</title></circle><text x="76" y="206" text-anchor="end">Grade C</text><rect x="211.8" y="194" width="36.5" height="18" rx="3" fill="var(--s1)" opacity="0.35"><title>Grade C: €30k to €39k, midpoint €34k</title></rect><line x1="230.1" y1="191" x2="230.1" y2="215" stroke="var(--s1)" stroke-width="2.5"/><circle cx="209.2" cy="203" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Customer Service L2: current midpoint €29k</title></circle><circle cx="216.1" cy="203" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Operations L2: current midpoint €31k</title></circle><circle cx="229.2" cy="203" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Sales L2: current midpoint €34k</title></circle><text x="76" y="250" text-anchor="end">Grade D</text><rect x="241.4" y="238" width="60.6" height="18" rx="3" fill="var(--s1)" opacity="0.35"><title>Grade D: €37k to €52k, midpoint €45k</title></rect><line x1="271.7" y1="235" x2="271.7" y2="259" stroke="var(--s1)" stroke-width="2.5"/><circle cx="242.6" cy="247" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Customer Service L3: current midpoint €37k</title></circle><circle cx="251.2" cy="247" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Operations L3: current midpoint €40k</title></circle><circle cx="259.8" cy="247" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>HR L3: current midpoint €42k</title></circle><circle cx="268.3" cy="247" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Sales L3: current midpoint €44k</title></circle><circle cx="276.9" cy="247" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Finance L3: current midpoint €46k</title></circle><circle cx="302.2" cy="247" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Tech L3: current midpoint €52k</title></circle><text x="76" y="294" text-anchor="end">Grade E</text><rect x="288.7" y="282" width="79.5" height="18" rx="3" fill="var(--s1)" opacity="0.35"><title>Grade E: €49k to €68k, midpoint €58k</title></rect><line x1="328.4" y1="279" x2="328.4" y2="303" stroke="var(--s1)" stroke-width="2.5"/><circle cx="290.4" cy="291" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Customer Service L4: current midpoint €49k</title></circle><circle cx="301.8" cy="291" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Operations L4: current midpoint €52k</title></circle><circle cx="312.8" cy="291" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>HR L4: current midpoint €55k</title></circle><circle cx="323.8" cy="291" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Sales L4: current midpoint €57k</title></circle><circle cx="335.3" cy="291" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Finance L4: current midpoint €60k</title></circle><circle cx="368.3" cy="291" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Tech L4: current midpoint €68k</title></circle><text x="76" y="338" text-anchor="end">Grade F</text><rect x="353.4" y="326" width="131.7" height="18" rx="3" fill="var(--s1)" opacity="0.35"><title>Grade F: €65k to €97k, midpoint €81k</title></rect><line x1="419.2" y1="323" x2="419.2" y2="347" stroke="var(--s1)" stroke-width="2.5"/><circle cx="367.1" cy="335" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Customer Service L5: current midpoint €68k</title></circle><circle cx="382.2" cy="335" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Operations L5: current midpoint €72k</title></circle><circle cx="397.7" cy="335" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>HR L5: current midpoint €75k</title></circle><circle cx="413.2" cy="335" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Sales L5: current midpoint €79k</title></circle><circle cx="428.3" cy="335" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Finance L5: current midpoint €83k</title></circle><circle cx="474.4" cy="335" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Tech L5: current midpoint €94k</title></circle><text x="76" y="382" text-anchor="end">Grade G</text><rect x="441.2" y="370" width="210.7" height="18" rx="3" fill="var(--s1)" opacity="0.35"><title>Grade G: €86k to €138k, midpoint €112k</title></rect><line x1="546.5" y1="367" x2="546.5" y2="391" stroke="var(--s1)" stroke-width="2.5"/><circle cx="472.0" cy="379" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Customer Service L6: current midpoint €94k</title></circle><circle cx="493.2" cy="379" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Operations L6: current midpoint €99k</title></circle><circle cx="514.4" cy="379" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>HR L6: current midpoint €104k</title></circle><circle cx="535.6" cy="379" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Sales L6: current midpoint €109k</title></circle><circle cx="556.9" cy="379" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Finance L6: current midpoint €114k</title></circle><circle cx="620.5" cy="379" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="1.5"><title>Tech L6: current midpoint €130k</title></circle><rect x="90" y="440" width="22" height="10" rx="2" fill="var(--s1)" opacity="0.35"/><text class="muted" x="118" y="450">new range, with its midpoint</text><circle cx="340" cy="445" r="4.5" fill="var(--s2)"/><text class="muted" x="350" y="450">current band midpoint of a role in the grade</text></svg>
+</div><figcaption>Italy: current midpoints and new ranges</figcaption></figure>
+<h2><span class="num">02</span><span>The market, country by country</span></h2>
+<p>Each role is matched to an ISCO major group (a contact centre agent to clerical support workers, a Tech L3 to professionals) and priced on Eurostat's mean base pay for that group: earnings minus annual bonuses, aged from 2022 with the labour cost index for wages and salaries, and raised by 8.1%, what enterprises of 1,000+ pay over enterprises of 10+ in Germany, Spain and Poland (Italy's figure is confidential).</p>
+<figure><div class="plate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 324" role="img" aria-label="One pay scale, four markets: Kraków +13.6%, Munich −9.7%"><style>
+  svg { --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --axis:#c3c2b7;
+        --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --base:#0b0b0b; --up:#e34948; --down:#2a78d6; }
+  @media (prefers-color-scheme: dark) {
+    svg { --surface:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781; --grid:#2c2c2a; --axis:#383835;
+          --s1:#3987e5; --s2:#d95926; --s3:#199e70; --base:#ffffff; --up:#e66767; --down:#3987e5; }
+  }
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; fill: var(--ink2); font-size: 12px; }
+  .title { fill: var(--ink); font-size: 15px; font-weight: 600; }
+  .muted { fill: var(--muted); font-size: 11px; }
+  .val { fill: var(--ink); font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--surface);
+         stroke-width: 4px; stroke-linejoin: round; }
+  .inbar { fill: #ffffff; font-weight: 600; font-variant-numeric: tabular-nums; }
+</style><rect width="720" height="324" rx="8" fill="var(--surface)"/><text class="title" x="24" y="34">One pay scale, four markets: Kraków +13.6%, Munich −9.7%</text><text x="24" y="56">Payroll against what large employers pay for the same occupations, grades A–E, mid-2026</text><line x1="170.0" y1="86" x2="170.0" y2="286" stroke="var(--grid)"/><text class="muted" x="170.0" y="304" text-anchor="middle">−20%</text><line x1="285.0" y1="86" x2="285.0" y2="286" stroke="var(--grid)"/><text class="muted" x="285.0" y="304" text-anchor="middle">−10%</text><line x1="400.0" y1="86" x2="400.0" y2="286" stroke="var(--grid)"/><text class="muted" x="400.0" y="304" text-anchor="middle">market</text><line x1="515.0" y1="86" x2="515.0" y2="286" stroke="var(--grid)"/><text class="muted" x="515.0" y="304" text-anchor="middle">+10%</text><line x1="630.0" y1="86" x2="630.0" y2="286" stroke="var(--grid)"/><text class="muted" x="630.0" y="304" text-anchor="middle">+20%</text><text x="158" y="114" text-anchor="end">IT · Milan</text><rect x="319.7" y="100" width="80.3" height="22" rx="3" fill="var(--s1)"><title>IT · Milan: payroll −7.0% against market</title></rect><text class="val" x="311.7" y="116" text-anchor="end">−7.0%</text><text x="158" y="160" text-anchor="end">PL · Kraków</text><rect x="400.0" y="146" width="156.1" height="22" rx="3" fill="var(--s2)"><title>PL · Kraków: payroll +13.6% against market</title></rect><text class="val" x="564.1" y="162" text-anchor="start">+13.6%</text><text x="158" y="206" text-anchor="end">DE · Munich</text><rect x="288.0" y="192" width="112.0" height="22" rx="3" fill="var(--s1)"><title>DE · Munich: payroll −9.7% against market</title></rect><text class="val" x="280.0" y="208" text-anchor="end">−9.7%</text><text x="158" y="252" text-anchor="end">ES · Barcelona</text><rect x="388.3" y="238" width="11.7" height="22" rx="3" fill="var(--s1)"><title>ES · Barcelona: payroll −1.0% against market</title></rect><text class="val" x="380.3" y="254" text-anchor="end">−1.0%</text><line x1="400.0" y1="86" x2="400.0" y2="286" stroke="var(--base)" stroke-width="1.5"/></svg>
+</div><figcaption>Payroll against market</figcaption></figure>
+<div class="table-wrap"><table><thead><tr><th>Entity</th><th class="r">Payroll against market</th><th class="r">Current bands vs Italy</th><th class="r">Market vs Italy</th><th class="r">Labour cost growth, 2025</th></tr></thead><tbody><tr><td>IT · Milan</td><td class="r">−7.0%</td><td class="r">100%</td><td class="r">100%</td><td class="r">3.0%</td></tr><tr><td>PL · Kraków</td><td class="r">+13.6%</td><td class="r">81%</td><td class="r">66%</td><td class="r">8.9%</td></tr><tr><td>DE · Munich</td><td class="r">−9.7%</td><td class="r">146%</td><td class="r">151%</td><td class="r">3.9%</td></tr><tr><td>ES · Barcelona</td><td class="r">−1.0%</td><td class="r">96%</td><td class="r">90%</td><td class="r">3.0%</td></tr></tbody></table></div>
+<p class="note">Grades A–E only: ISCO group 1 averages every manager, from a shop manager to an Italian dirigente, so it is not a fair yardstick for grades F and G.</p>
+<h2><span class="num">03</span><span>The new structure</span></h2>
+<p>One range per grade and country. The <strong>midpoint</strong> is the country's market level times a grade index: the progression between grades in today's bands, with the family premiums averaged out and each grade at least 8% above the one below. The <strong>range</strong> runs from 30% wide at grade A to 60% at grade G.</p>
+<div class="table-wrap"><table><thead><tr><th>Grade</th><th class="r">Index</th><th class="r">IT · Milan</th><th class="r">PL · Kraków</th><th class="r">DE · Munich</th><th class="r">ES · Barcelona</th></tr></thead><tbody><tr><td>A</td><td class="r">0.66</td><td class="r">25,592 – 33,270</td><td class="r">72,081 – 93,706</td><td class="r">38,675 – 50,278</td><td class="r">23,112 – 30,046</td></tr><tr><td>B</td><td class="r">0.71</td><td class="r">27,640 – 35,932</td><td class="r">77,848 – 101,202</td><td class="r">41,770 – 54,300</td><td class="r">24,961 – 32,449</td></tr><tr><td>C</td><td class="r">0.77</td><td class="r">29,851 – 38,806</td><td class="r">84,076 – 109,298</td><td class="r">45,111 – 58,644</td><td class="r">26,958 – 35,045</td></tr><tr><td>D</td><td class="r">1.00</td><td class="r">37,095 – 51,933</td><td class="r">104,479 – 146,270</td><td class="r">56,058 – 78,482</td><td class="r">33,500 – 46,900</td></tr><tr><td>E</td><td class="r">1.31</td><td class="r">48,686 – 68,160</td><td class="r">137,124 – 191,974</td><td class="r">73,574 – 103,004</td><td class="r">43,967 – 61,554</td></tr><tr><td>F</td><td class="r">1.81</td><td class="r">64,545 – 96,817</td><td class="r">181,792 – 272,688</td><td class="r">97,541 – 146,311</td><td class="r">58,289 – 87,434</td></tr><tr><td>G</td><td class="r">2.51</td><td class="r">86,058 – 137,692</td><td class="r">242,383 – 387,813</td><td class="r">130,052 – 208,082</td><td class="r">77,717 – 124,348</td></tr></tbody></table></div>
+<p class="note">Full-time annual base pay: euro, Poland in zloty. The grade index is 1 at grade D.</p>
+<h2><span class="num">04</span><span>Who moves</span></h2>
+<figure><div class="plate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 306" role="img" aria-label="41% of Poland above the new maximum, 40% of Germany below the minimum"><style>
+  svg { --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --axis:#c3c2b7;
+        --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --base:#0b0b0b; --up:#e34948; --down:#2a78d6; }
+  @media (prefers-color-scheme: dark) {
+    svg { --surface:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781; --grid:#2c2c2a; --axis:#383835;
+          --s1:#3987e5; --s2:#d95926; --s3:#199e70; --base:#ffffff; --up:#e66767; --down:#3987e5; }
+  }
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; fill: var(--ink2); font-size: 12px; }
+  .title { fill: var(--ink); font-size: 15px; font-weight: 600; }
+  .muted { fill: var(--muted); font-size: 11px; }
+  .val { fill: var(--ink); font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--surface);
+         stroke-width: 4px; stroke-linejoin: round; }
+  .inbar { fill: #ffffff; font-weight: 600; font-variant-numeric: tabular-nums; }
+</style><rect width="720" height="306" rx="8" fill="var(--surface)"/><text class="title" x="24" y="34">41% of Poland above the new maximum, 40% of Germany below the minimum</text><text x="24" y="56">Employees on the payroll at 30 June 2026 against the range of their grade</text><rect x="170" y="76" width="12" height="12" rx="2" fill="var(--s1)"/><text x="188" y="86">Below the minimum</text><rect x="340" y="76" width="12" height="12" rx="2" fill="var(--axis)"/><text x="358" y="86">Within</text><rect x="510" y="76" width="12" height="12" rx="2" fill="var(--s2)"/><text x="528" y="86">Above the maximum</text><text x="158" y="129" text-anchor="end">IT · Milan</text><rect x="170.0" y="114" width="172.9" height="24" fill="var(--s1)"><title>IT · Milan: 34% below the minimum</title></rect><text class="inbar" x="256.5" y="131" text-anchor="middle">34%</text><rect x="342.9" y="114" width="277.5" height="24" fill="var(--axis)"><title>IT · Milan: 54% within the range</title></rect><rect x="620.4" y="114" width="59.6" height="24" fill="var(--s2)"><title>IT · Milan: 12% above the maximum</title></rect><text class="inbar" x="650.2" y="131" text-anchor="middle">12%</text><text x="158" y="173" text-anchor="end">PL · Kraków</text><rect x="170.0" y="158" width="33.1" height="24" fill="var(--s1)"><title>PL · Kraków: 6% below the minimum</title></rect><text class="inbar" x="186.5" y="175" text-anchor="middle">6%</text><rect x="203.1" y="158" width="268.2" height="24" fill="var(--axis)"><title>PL · Kraków: 53% within the range</title></rect><rect x="471.3" y="158" width="208.7" height="24" fill="var(--s2)"><title>PL · Kraków: 41% above the maximum</title></rect><text class="inbar" x="575.7" y="175" text-anchor="middle">41%</text><text x="158" y="217" text-anchor="end">DE · Munich</text><rect x="170.0" y="202" width="201.7" height="24" fill="var(--s1)"><title>DE · Munich: 40% below the minimum</title></rect><text class="inbar" x="270.8" y="219" text-anchor="middle">40%</text><rect x="371.7" y="202" width="265.7" height="24" fill="var(--axis)"><title>DE · Munich: 52% within the range</title></rect><rect x="637.3" y="202" width="42.7" height="24" fill="var(--s2)"><title>DE · Munich: 8% above the maximum</title></rect><text class="inbar" x="658.7" y="219" text-anchor="middle">8%</text><text x="158" y="261" text-anchor="end">ES · Barcelona</text><rect x="170.0" y="246" width="102.4" height="24" fill="var(--s1)"><title>ES · Barcelona: 20% below the minimum</title></rect><text class="inbar" x="221.2" y="263" text-anchor="middle">20%</text><rect x="272.4" y="246" width="323.8" height="24" fill="var(--axis)"><title>ES · Barcelona: 63% within the range</title></rect><rect x="596.2" y="246" width="83.8" height="24" fill="var(--s2)"><title>ES · Barcelona: 16% above the maximum</title></rect><text class="inbar" x="638.1" y="263" text-anchor="middle">16%</text></svg>
+</div><figcaption>Positions against the new ranges</figcaption></figure>
+<div class="table-wrap"><table><thead><tr><th>Entity</th><th class="r">Below minimum</th><th class="r">Above maximum</th><th class="r">Cost to minimum</th><th class="r">of which women</th><th class="r">Pay above maximum</th><th class="r">Years to absorb</th></tr></thead><tbody><tr><td>IT · Milan</td><td class="r">357</td><td class="r">123</td><td class="r">€1.14M</td><td class="r">63%</td><td class="r">€0.52M</td><td class="r">3.0</td></tr><tr><td>PL · Kraków</td><td class="r">75</td><td class="r">473</td><td class="r">€0.10M</td><td class="r">54%</td><td class="r">€2.28M</td><td class="r">1.3</td></tr><tr><td>DE · Munich</td><td class="r">293</td><td class="r">62</td><td class="r">€1.57M</td><td class="r">54%</td><td class="r">€0.29M</td><td class="r">1.3</td></tr><tr><td>ES · Barcelona</td><td class="r">99</td><td class="r">81</td><td class="r">€0.22M</td><td class="r">63%</td><td class="r">€0.38M</td><td class="r">3.2</td></tr></tbody></table></div>
+<p class="note">Costs are annual full-time-equivalent base pay, before employer contributions. Years to absorb: the median time for the maximum to reach a frozen salary at the country's 2025 labour cost growth.</p>
+<figure><div class="plate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 384" role="img" aria-label="Without family premiums, Tech sits 14%–43% above the midpoint"><style>
+  svg { --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781; --grid:#e1e0d9; --axis:#c3c2b7;
+        --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --base:#0b0b0b; --up:#e34948; --down:#2a78d6; }
+  @media (prefers-color-scheme: dark) {
+    svg { --surface:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781; --grid:#2c2c2a; --axis:#383835;
+          --s1:#3987e5; --s2:#d95926; --s3:#199e70; --base:#ffffff; --up:#e66767; --down:#3987e5; }
+  }
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; fill: var(--ink2); font-size: 12px; }
+  .title { fill: var(--ink); font-size: 15px; font-weight: 600; }
+  .muted { fill: var(--muted); font-size: 11px; }
+  .val { fill: var(--ink); font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--surface);
+         stroke-width: 4px; stroke-linejoin: round; }
+  .inbar { fill: #ffffff; font-weight: 600; font-variant-numeric: tabular-nums; }
+</style><rect width="720" height="384" rx="8" fill="var(--surface)"/><text class="title" x="24" y="34">Without family premiums, Tech sits 14%–43% above the midpoint</text><text x="24" y="56">Average compa-ratio against the new equal-value midpoint, by family: dot = mean of the four countries, line = their range</text><line x1="170.0" y1="88" x2="170.0" y2="346" stroke="var(--grid)"/><text class="muted" x="170.0" y="364" text-anchor="middle">0.7</text><line x1="292.5" y1="88" x2="292.5" y2="346" stroke="var(--grid)"/><text class="muted" x="292.5" y="364" text-anchor="middle">0.9</text><line x1="353.8" y1="88" x2="353.8" y2="346" stroke="var(--grid)"/><text class="muted" x="353.8" y="364" text-anchor="middle">1.0</text><line x1="415.0" y1="88" x2="415.0" y2="346" stroke="var(--grid)"/><text class="muted" x="415.0" y="364" text-anchor="middle">1.1</text><line x1="537.5" y1="88" x2="537.5" y2="346" stroke="var(--grid)"/><text class="muted" x="537.5" y="364" text-anchor="middle">1.3</text><line x1="660.0" y1="88" x2="660.0" y2="346" stroke="var(--grid)"/><text class="muted" x="660.0" y="364" text-anchor="middle">1.5</text><line x1="353.8" y1="88" x2="353.8" y2="346" stroke="var(--base)" stroke-width="1.5"/><text class="muted" x="359.8" y="84">new midpoint</text><text x="158" y="116" text-anchor="end">Customer Service</text><line x1="221.3" y1="112" x2="351.5" y2="112" stroke="var(--s1)" stroke-width="3" stroke-linecap="round" opacity="0.45"/><circle cx="270.6" cy="112" r="6" fill="var(--s1)"><title>Customer Service: 0.86 on average, 0.78 to 1.00 across countries</title></circle><text class="val" x="361.5" y="116">0.86</text><text x="158" y="156" text-anchor="end">Operations</text><line x1="250.5" y1="152" x2="378.4" y2="152" stroke="var(--s1)" stroke-width="3" stroke-linecap="round" opacity="0.45"/><circle cx="298.4" cy="152" r="6" fill="var(--s1)"><title>Operations: 0.91 on average, 0.83 to 1.04 across countries</title></circle><text class="val" x="388.4" y="156">0.91</text><text x="158" y="196" text-anchor="end">Tech</text><line x1="437.6" y1="192" x2="619.3" y2="192" stroke="var(--s2)" stroke-width="3" stroke-linecap="round" opacity="0.45"/><circle cx="507.4" cy="192" r="6" fill="var(--s2)"><title>Tech: 1.25 on average, 1.14 to 1.43 across countries</title></circle><text class="val" x="629.3" y="196">1.25</text><text x="158" y="236" text-anchor="end">Sales</text><line x1="312.0" y1="232" x2="461.9" y2="232" stroke="var(--s2)" stroke-width="3" stroke-linecap="round" opacity="0.45"/><circle cx="367.5" cy="232" r="6" fill="var(--s2)"><title>Sales: 1.02 on average, 0.93 to 1.18 across countries</title></circle><text class="val" x="471.9" y="236">1.02</text><text x="158" y="276" text-anchor="end">Finance</text><line x1="360.4" y1="272" x2="505.6" y2="272" stroke="var(--s2)" stroke-width="3" stroke-linecap="round" opacity="0.45"/><circle cx="416.9" cy="272" r="6" fill="var(--s2)"><title>Finance: 1.10 on average, 1.01 to 1.25 across countries</title></circle><text class="val" x="515.6" y="276">1.10</text><text x="158" y="316" text-anchor="end">HR</text><line x1="297.8" y1="312" x2="431.9" y2="312" stroke="var(--s1)" stroke-width="3" stroke-linecap="round" opacity="0.45"/><circle cx="347.9" cy="312" r="6" fill="var(--s1)"><title>HR: 0.99 on average, 0.91 to 1.13 across countries</title></circle><text class="val" x="441.9" y="316">0.99</text></svg>
+</div><figcaption>Compa-ratio by family</figcaption></figure>
+<p>Poland's position is a policy choice the company never made explicitly. Setting its midpoints above the local market changes the picture:</p>
+<div class="table-wrap"><table><thead><tr><th>Poland positioned at</th><th class="r">Below minimum</th><th class="r">Above maximum</th><th class="r">Pay above maximum</th><th class="r">Cost to minimum</th></tr></thead><tbody><tr><td>100%</td><td class="r">6%</td><td class="r">41%</td><td class="r">€2.28M</td><td class="r">€0.10M</td></tr><tr><td>110%</td><td class="r">14%</td><td class="r">22%</td><td class="r">€1.13M</td><td class="r">€0.33M</td></tr><tr><td>120%</td><td class="r">29%</td><td class="r">12%</td><td class="r">€0.50M</td><td class="r">€0.83M</td></tr></tbody></table></div>
+<p class="note">The wider the positioning, the more staff fall below the minimum instead: Polish pay is dispersed more widely than a single range can hold.</p>
+<h2><span class="num">05</span><span>Job advertisements and progression</span></h2>
+<p>Article 5 gives applicants the right to the starting pay or its range before the interview, based on objective, gender-neutral criteria, and bars employers from asking about pay history. The range for each role follows from its grade:</p>
+<div class="table-wrap"><table><thead><tr><th>Role</th><th>Grade</th><th>IT · Milan</th><th>PL · Kraków</th><th>DE · Munich</th><th>ES · Barcelona</th></tr></thead><tbody><tr><td>Customer Service L1</td><td>B</td><td>EUR 27,500 – 36,000 per year</td><td>PLN 6,400 – 8,500 per month</td><td>EUR 41,500 – 54,500 per year</td><td>EUR 24,500 – 32,500 per year</td></tr><tr><td>Operations L2</td><td>C</td><td>EUR 29,500 – 39,000 per year</td><td>PLN 7,000 – 9,200 per month</td><td>EUR 45,000 – 59,000 per year</td><td>EUR 26,500 – 35,500 per year</td></tr><tr><td>Tech L3</td><td>D</td><td>EUR 37,000 – 52,000 per year</td><td>PLN 8,700 – 12,200 per month</td><td>EUR 56,000 – 78,500 per year</td><td>EUR 33,000 – 47,000 per year</td></tr><tr><td>Finance L4</td><td>E</td><td>EUR 48,500 – 68,500 per year</td><td>PLN 11,400 – 16,000 per month</td><td>EUR 73,500 – 103,500 per year</td><td>EUR 43,500 – 62,000 per year</td></tr><tr><td>Sales L5</td><td>F</td><td>EUR 64,500 – 97,000 per year</td><td>PLN 15,100 – 22,800 per month</td><td>EUR 97,500 – 146,500 per year</td><td>EUR 58,000 – 87,500 per year</td></tr></tbody></table></div>
+<p>Rounded outwards to €500 or PLN 1,000 a year (PLN 100 a month), so the published range always contains the real one. Poland advertises monthly gross pay, as its job market does; the others annual. Article 6 then asks for the criteria that move someone through the range: the proposal is time in grade and performance against the role's objectives, with position in range reviewed each year.</p>
+<h2><span class="num">06</span><span>Recommendations</span></h2>
+<ol><li><strong>Adopt one structure by grade.</strong> Keep a family premium only where the company can document an objective, gender-neutral market reason, review it every year, and have counsel test it against national law.</li><li><strong>Close the gaps to the minimum over two pay reviews</strong>, starting with the grades where women are furthest below: €3.02M a year in total.</li><li><strong>Protect pay above the maximum, don't cut it.</strong> Hold increases to lump sums until the range catches up, and say so in writing to the people affected.</li><li><strong>Decide Poland's positioning deliberately.</strong> Paying above the local market can be a sound retention choice in Kraków; it should be a decision with a number, not the side-effect of a single scale.</li><li><strong>Publish ranges in every vacancy</strong> in the countries that have transposed Article 5, and remove pay-history questions from applications and interviews.</li><li><strong>Price the jobs on a salary survey before implementing.</strong> Eurostat gives reliable country levels by occupation, not level-by-level market rates.</li></ol>
+<h2><span class="num">07</span><span>Method and limits</span></h2>
+<ul><li><strong>Two engines, one answer.</strong> Every figure is computed in pandas and again by live formulas in <a href="equal_value_pay_ranges.xlsx">the workbook</a>; its Reconciliation sheet checks each pair, and CI recalculates the workbook with LibreOffice.</li><li><strong>Occupations, not jobs.</strong> ISCO major groups are broad and earnings are means, which sit above medians. The market sets each country's level; it cannot price the step from team lead to manager.</li><li><strong>Synthetic company.</strong> Employees, salaries and current bands come from a synthetic organisation, whose country pay levels were set without reference to the market; the gap to the market is part of the case.</li><li><strong>Collective agreements.</strong> In Italy and Spain sector agreements set minimum pay by level; any range sits on top of them. Full method in <a href="https://github.com/D0M3N1C0X/equal-value-pay-ranges/blob/main/docs/method.md">docs/method.md</a>.</li></ul></article><footer class="colophon">Generated from <code>reports/report.md</code> by <code>python3 src/run_all.py</code>. Synthetic employees, real Eurostat market data. Not legal or pay advice. Source: <a href="https://github.com/D0M3N1C0X/equal-value-pay-ranges">equal-value-pay-ranges</a>.</footer></div></body></html>
