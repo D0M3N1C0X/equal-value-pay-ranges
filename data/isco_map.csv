@@ -1,0 +1,37 @@
+department,job_level,isco08,rationale
+Customer Service,L1,OC4,customer services clerks (ISCO 42): contact centre agents
+Customer Service,L2,OC4,customer services clerks (ISCO 42): experienced agents
+Customer Service,L3,OC4,customer services clerks (ISCO 42): senior agents handling exceptions
+Customer Service,L4,OC3,supervisors of clerical workers (ISCO 3341) and process specialists
+Customer Service,L5,OC1,managers (ISCO 1): manager accountable for the function in the country
+Customer Service,L6,OC1,managers (ISCO 1): country head of the function
+Operations,L1,OC9,labourers and freight handlers (ISCO 93): physical on-site shift work
+Operations,L2,OC8,plant and machine operators and drivers (ISCO 83): e.g. lift-truck operators
+Operations,L3,OC8,plant and machine operators and drivers (ISCO 83): senior operators
+Operations,L4,OC3,supervisors (ISCO 31/33) and process specialists
+Operations,L5,OC1,managers (ISCO 1): manager accountable for the function in the country
+Operations,L6,OC1,managers (ISCO 1): country head of the function
+Tech,L1,OC3,ICT operations and user support technicians (ISCO 35)
+Tech,L2,OC3,ICT operations and user support technicians (ISCO 35)
+Tech,L3,OC2,ICT professionals (ISCO 25)
+Tech,L4,OC2,ICT professionals (ISCO 25): lead or specialist
+Tech,L5,OC1,managers (ISCO 1): manager accountable for the function in the country
+Tech,L6,OC1,managers (ISCO 1): country head of the function
+Sales,L1,OC3,sales and purchasing agents and brokers (ISCO 332): B2B sales with targets and travel
+Sales,L2,OC3,sales and purchasing agents and brokers (ISCO 332)
+Sales,L3,OC3,sales and purchasing agents and brokers (ISCO 332): senior representatives
+Sales,L4,OC3,sales and purchasing agents and brokers (ISCO 332): team lead
+Sales,L5,OC1,managers (ISCO 1): manager accountable for the function in the country
+Sales,L6,OC1,managers (ISCO 1): country head of the function
+Finance,L1,OC4,numerical clerks (ISCO 43): accounting and bookkeeping clerks
+Finance,L2,OC3,financial and mathematical associate professionals (ISCO 331)
+Finance,L3,OC2,finance professionals (ISCO 241)
+Finance,L4,OC2,finance professionals (ISCO 241): lead or specialist
+Finance,L5,OC1,managers (ISCO 1): manager accountable for the function in the country
+Finance,L6,OC1,managers (ISCO 1): country head of the function
+HR,L1,OC4,general office clerks (ISCO 41): HR administration
+HR,L2,OC3,administrative and specialised secretaries and associate professionals (ISCO 33)
+HR,L3,OC2,personnel and careers professionals (ISCO 2423)
+HR,L4,OC2,personnel and careers professionals (ISCO 2423): lead or specialist
+HR,L5,OC1,managers (ISCO 1): manager accountable for the function in the country
+HR,L6,OC1,managers (ISCO 1): country head of the function

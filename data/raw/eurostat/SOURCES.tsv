@@ -1,0 +1,4 @@
+file	url	retrieved
+earn_ses22_28	https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/earn_ses22_28?format=JSON&lang=EN&geo=IT&geo=PL&geo=DE&geo=ES&sex=T&age=TOTAL&sizeclas=GE10	2026-09-30
+earn_ses22_32	https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/earn_ses22_32?format=JSON&lang=EN&geo=IT&geo=PL&geo=DE&geo=ES&sex=T&sizeclas=GE1000	2026-09-30
+lc_lci_r2_a	https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/lc_lci_r2_a?format=JSON&lang=EN&geo=IT&geo=PL&geo=DE&geo=ES&nace_r2=B-S&lcstruct=D11&unit=I20&sinceTimePeriod=2022	2026-09-30
