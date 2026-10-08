@@ -610,7 +610,10 @@ class Model:
             put(ws, f"A{r}", area)
             put(ws, f"B{r}", item)
             fmt = "0.000000" if isinstance(value, float) else None
-            put(ws, f"D{r}", value, color=BLUE, fmt=fmt)
+            # 12 significant digits: the last binary digit of a float can differ between platforms
+            # (here, an exp of a mean of logs), which would make the file differ; the check allows 1e-9
+            stored = float(f"{value:.12g}") if isinstance(value, float) else value
+            put(ws, f"D{r}", stored, color=BLUE, fmt=fmt)
             put(ws, f"E{r}", f"={ref}", color=GREEN, fmt=fmt)
             put(ws, f"F{r}", f'=IF(AND(ISNUMBER(D{r}),ISNUMBER(E{r})),E{r}-D{r},"")', fmt="0.0E+00")
             put(ws, f"G{r}", (f'=IF(AND(D{r}="",E{r}=""),"Yes",IF(AND(ISNUMBER(D{r}),ISNUMBER(E{r})),'
