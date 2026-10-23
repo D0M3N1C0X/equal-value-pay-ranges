@@ -140,7 +140,7 @@ def write(o: dict) -> dict:
         f"[docs/verification.md](../docs/verification.md)")
     add("")
     add("> The Pay Transparency Directive asks for pay structures that compare work of equal value on objective, "
-        "gender-neutral criteria (Article 4), a pay range for every vacancy (Article 5) and accessible criteria for "
+        "gender-neutral criteria (Article 4), the starting pay or its range for applicants before the interview, for example in the vacancy notice (Article 5) and accessible criteria for "
         "pay and progression (Article 6). This review tests the company's bands against all three. Not legal advice.")
     add("")
 

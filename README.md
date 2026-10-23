@@ -2,8 +2,9 @@
 
 A multinational pays through bands built family by family: at the same level, Tech earns more than
 Customer Service, and every country gets a fixed share of the Italian scale. The EU Pay Transparency
-Directive asks for pay structures that compare **work of equal value** (Article 4), a pay range in
-**every job advertisement** (Article 5) and **open criteria for progression** (Article 6). This
+Directive asks for pay structures that compare **work of equal value** (Article 4), the starting pay or its
+range for applicants **before the interview**, typically in the job advertisement (Article 5), and **open
+criteria for progression** (Article 6). This
 repository redesigns the structure **as a reward team would**: one range per grade and country,
 priced on real Eurostat market data, every employee placed against it, the cost of the move, and the
 range to publish for every role.

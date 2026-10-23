@@ -4,7 +4,7 @@
 **Market:** Eurostat Structure of Earnings Survey 2022 by occupation, aged to mid-2026 with the labour cost index, plus a 8.1% large-employer premium
 **Data:** employees and current bands synthetic, from [hr-people-analytics](https://github.com/D0M3N1C0X/hr-people-analytics); job evaluation from [pay-transparency-readiness-kit](https://github.com/D0M3N1C0X/pay-transparency-readiness-kit); market figures real, with their sources in [docs/verification.md](../docs/verification.md)
 
-> The Pay Transparency Directive asks for pay structures that compare work of equal value on objective, gender-neutral criteria (Article 4), a pay range for every vacancy (Article 5) and accessible criteria for pay and progression (Article 6). This review tests the company's bands against all three. Not legal advice.
+> The Pay Transparency Directive asks for pay structures that compare work of equal value on objective, gender-neutral criteria (Article 4), the starting pay or its range for applicants before the interview, for example in the vacancy notice (Article 5) and accessible criteria for pay and progression (Article 6). This review tests the company's bands against all three. Not legal advice.
 
 ## The answer
 
